@@ -1,0 +1,145 @@
+.home-page {
+  flex: 1;
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: var(--page-padding);
+  gap: clamp(1rem, 4vw, 1.5rem);
+}
+
+.home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.home-header h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 6vw, 2rem);
+}
+
+.logout-btn {
+  font: inherit;
+  font-size: 0.95rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-h);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.logout-btn:hover {
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+}
+
+/* ─── CREATE BUTTON ─── */
+.kassim-btn {
+  width: 100%;
+  min-height: 56px;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 14px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+.kassim-btn:active {
+  transform: scale(0.99);
+}
+
+/* ─── SAVED SESSIONS ─── */
+.saved {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.saved-title {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.saved-empty {
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding: 1rem;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.saved-error {
+  color: #b45309;
+  border-color: rgba(245, 158, 11, 0.45);
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.saved-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.saved-card {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.saved-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: flex-start;
+  text-align: left;
+  padding: 0.9rem 1rem;
+  min-height: 60px;
+  border: none;
+  background: transparent;
+  color: var(--text-h);
+  cursor: pointer;
+  font: inherit;
+}
+
+.saved-main:hover {
+  background: var(--accent-bg);
+}
+
+.saved-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.saved-meta {
+  font-size: 0.8rem;
+  color: var(--text);
+}
+
+.saved-del {
+  flex: 0 0 auto;
+  width: 52px;
+  border: none;
+  border-left: 1px solid var(--border);
+  background: transparent;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.saved-del:hover {
+  background: rgba(240, 74, 106, 0.12);
+}

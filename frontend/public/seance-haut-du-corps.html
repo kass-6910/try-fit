@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circuit Haut du Corps – Kassim</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --card: #1a1a26;
+    --accent: #e8f04a;
+    --accent2: #4af0c8;
+    --text: #f0f0f8;
+    --muted: #5a5a78;
+    --danger: #f04a6a;
+    --rest-color: #4af0c8;
+    --work-color: #e8f04a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 60px;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px; left: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(232,240,74,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+    padding: 0 56px;
+    position: relative;
+    z-index: 1;
+  }
+  .header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 11vw, 88px);
+    letter-spacing: 3px;
+    color: var(--accent);
+    line-height: 0.9;
+    overflow-wrap: anywhere;
+    text-shadow: 0 0 80px rgba(232,240,74,0.25);
+  }
+  .header p {
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 10px;
+  }
+
+  /* ─── MAIN CARD ─── */
+  .main-card {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 24px;
+    padding: 32px 28px;
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 20px;
+  }
+
+  /* ─── PHASE LABEL ─── */
+  .phase-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    transition: color 0.4s;
+  }
+  .phase-label.rest { color: var(--rest-color); }
+  .phase-label.work { color: var(--work-color); }
+
+  /* ─── EXERCISE DISPLAY ─── */
+  .exercise-emoji {
+    font-size: 64px;
+    line-height: 1;
+    margin-bottom: 10px;
+    display: block;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .exercise-emoji.pulse {
+    animation: emojiBounce 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes emojiBounce {
+    0% { transform: scale(0.7); }
+    60% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+
+  .exercise-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 8vw, 52px);
+    letter-spacing: 2px;
+    line-height: 1;
+    margin-bottom: 6px;
+    transition: opacity 0.3s;
+  }
+
+  .exercise-detail {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  /* ─── TIMER CIRCLE ─── */
+  .timer-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .timer-svg-wrap {
+    position: relative;
+    width: 160px;
+    height: 160px;
+  }
+  .timer-svg-wrap svg {
+    transform: rotate(-90deg);
+  }
+  .timer-track {
+    fill: none;
+    stroke: rgba(255,255,255,0.06);
+    stroke-width: 8;
+  }
+  .timer-progress {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear, stroke 0.4s;
+  }
+  .timer-progress.rest-mode {
+    stroke: var(--rest-color);
+  }
+  .timer-num {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    letter-spacing: 2px;
+    color: var(--text);
+    line-height: 1;
+    transition: color 0.4s;
+  }
+  .timer-num.danger { color: var(--danger); }
+
+  /* ─── ROUND INDICATOR ─── */
+  .rounds-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .rounds-label {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .round-dots {
+    display: flex;
+    gap: 6px;
+  }
+  .round-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    transition: background 0.3s, transform 0.3s;
+  }
+  .round-dot.done { background: var(--accent2); }
+  .round-dot.active { background: var(--accent); transform: scale(1.3); }
+
+  /* ─── PROGRESS BAR ─── */
+  .progress-bar-wrap {
+    background: rgba(255,255,255,0.05);
+    border-radius: 100px;
+    height: 4px;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 100px;
+    transition: width 0.5s ease;
+  }
+
+  /* ─── CONTROLS ─── */
+  .controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .btn {
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 1px;
+    transition: transform 0.15s, opacity 0.15s;
+    padding: 0;
+  }
+  .btn:active { transform: scale(0.95); }
+  .btn-primary {
+    background: var(--accent);
+    color: #0a0a0f;
+    width: 140px;
+    height: 52px;
+    font-size: 15px;
+  }
+  .btn-secondary {
+    background: rgba(255,255,255,0.07);
+    color: var(--text);
+    width: 80px;
+    height: 52px;
+  }
+  .btn-icon {
+    background: rgba(255,255,255,0.07);
+    color: var(--muted);
+    width: 52px;
+    height: 52px;
+    font-size: 18px;
+  }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* ─── QUEUE ─── */
+  .queue-title {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .queue-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 480px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+  .queue-item {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    opacity: 0.45;
+    transition: opacity 0.3s, border-color 0.3s, transform 0.3s;
+  }
+  .queue-item.active-item {
+    opacity: 1;
+    border-color: rgba(232,240,74,0.25);
+    transform: translateX(4px);
+  }
+  .queue-item.done-item {
+    opacity: 0.2;
+  }
+  .queue-emoji { font-size: 22px; min-width: 28px; text-align: center; }
+  .queue-info { flex: 1; }
+  .queue-name { font-size: 14px; font-weight: 500; }
+  .queue-sub { font-size: 12px; color: var(--muted); }
+  .queue-check {
+    font-size: 16px;
+    color: var(--accent2);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .queue-item.done-item .queue-check { opacity: 1; }
+
+  /* ─── FINISH SCREEN ─── */
+  .finish-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+  }
+  .finish-screen.show { display: flex; }
+  .finish-emoji { font-size: 80px; margin-bottom: 16px; animation: popIn 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+  @keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .finish-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-shadow: 0 0 60px rgba(232,240,74,0.4);
+    margin-bottom: 8px;
+  }
+  .finish-sub { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
+  .finish-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    width: 100%;
+    max-width: 380px;
+    margin-bottom: 32px;
+  }
+  .stat-box {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 20px 12px;
+  }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    display: block;
+  }
+  .stat-label { font-size: 11px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+
+  .main-area { width: 100%; max-width: 480px; position: relative; z-index: 1; }
+  .sound-btn-wrap { position: fixed; top: 20px; right: 20px; z-index: 10; }
+  .sound-btn {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 50%;
+    width: 44px; height: 44px;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text);
+    transition: background 0.2s;
+  }
+  .sound-btn:hover { background: var(--surface); }
+</style>
+</head>
+<body>
+
+<div class="sound-btn-wrap">
+  <button class="sound-btn" id="soundToggle" title="Son on/off">🔊</button>
+</div>
+
+<div class="header">
+  <h1 id="headerTitle">Circuit<br>Haut du Corps</h1>
+  <p>Kassim · Calisthenics</p>
+</div>
+
+<!-- MAIN AREA -->
+<div class="main-area" id="warmupError" style="display:none;">
+  <div class="main-card">
+    <div class="phase-label">SÉANCE INCOMPLÈTE</div>
+    <span class="exercise-emoji">⚠️</span>
+    <div class="exercise-name">Échauffement obligatoire</div>
+    <div class="exercise-detail">Ajoute au moins 1 exercice d'échauffement dans le builder avant de démarrer.</div>
+  </div>
+</div>
+
+<div class="main-area" id="mainArea">
+  <div class="main-card">
+    <div class="phase-label" id="phaseLabel">ÉCHAUFFEMENT</div>
+    <span class="exercise-emoji" id="exerciseEmoji">🤸</span>
+    <div class="exercise-name" id="exerciseName">Dead Hang</div>
+    <div class="exercise-detail" id="exerciseDetail">Série 1 / 2 · 20–30 sec</div>
+
+    <div class="timer-wrap">
+      <div class="timer-svg-wrap">
+        <svg width="160" height="160" viewBox="0 0 160 160">
+          <circle class="timer-track" cx="80" cy="80" r="68"/>
+          <circle class="timer-progress" id="timerProgress" cx="80" cy="80" r="68"
+            stroke-dasharray="427.256"
+            stroke-dashoffset="0"/>
+        </svg>
+        <div class="timer-num" id="timerNum">30</div>
+      </div>
+    </div>
+
+    <div class="rounds-row">
+      <span class="rounds-label">Rounds</span>
+      <div class="round-dots" id="roundDots"></div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-icon" id="resetBtn" title="Réinitialiser">↺</button>
+      <button class="btn btn-primary" id="mainBtn">START</button>
+      <button class="btn btn-secondary" id="skipBtn">Skip →</button>
+    </div>
+  </div>
+
+  <p class="queue-title" style="padding-left:4px; position:relative; z-index:1;">File d'exercices</p>
+  <div class="queue-list" id="queueList"></div>
+</div>
+
+<!-- FINISH SCREEN -->
+<div class="finish-screen" id="finishScreen">
+  <div class="finish-emoji">🏆</div>
+  <div class="finish-title">Bien joué,<br>Kassim !</div>
+  <div class="finish-sub">Circuit terminé · Récupère bien 💪</div>
+  <div class="finish-stats">
+    <div class="stat-box">
+      <span class="stat-num" id="statRounds">4</span>
+      <span class="stat-label">Rounds</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-num" id="statExercises">6</span>
+      <span class="stat-label">Exercices</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-num" id="statTime">--</span>
+      <span class="stat-label">Temps</span>
+    </div>
+  </div>
+  <button class="btn btn-primary" style="width:200px;height:56px;" onclick="restartAll()">Recommencer</button>
+</div>
+
+<script>
+// ─── PROGRAMME (depuis le builder, sinon valeurs par défaut) ───
+const SESSION = (() => {
+  try { return JSON.parse(localStorage.getItem('tryfit_session')); }
+  catch (e) { return null; }
+})();
+
+if (SESSION && SESSION.title) {
+  document.getElementById('headerTitle').textContent = SESSION.title;
+}
+
+const WARMUP = (SESSION && Array.isArray(SESSION.warmups) && SESSION.warmups.length
+  ? SESSION.warmups
+  : []
+).map(w => ({ ...w, phase: 'ÉCHAUFFEMENT' }));
+
+const HAS_WARMUP = WARMUP.length > 0;
+
+const CIRCUIT_EXERCISES = (SESSION && SESSION.exercises && SESSION.exercises.length) ? SESSION.exercises : [
+  { name: 'Tractions',       emoji: '🏋️', detail: 'Prise pronation · max reps' },
+  { name: 'Dips',            emoji: '💪', detail: 'Barres parallèles · max reps' },
+  { name: 'Pompes classiques',emoji: '🫸', detail: 'Dos droit · max reps' },
+  { name: 'Pompes diamant',  emoji: '💎', detail: 'Index + pouces · max reps' },
+  { name: 'Australiennes',   emoji: '🦅', detail: 'Corps incliné · max reps' },
+  { name: 'Gainage / Planche',emoji: '🧱', detail: 'Tenu · 30–60 sec', duration: 45 },
+];
+
+const TOTAL_ROUNDS = (SESSION && SESSION.rounds) ? SESSION.rounds : 4;
+const REST_BETWEEN = (SESSION && SESSION.restBetween) ? SESSION.restBetween : 15;   // sec entre exos
+const REST_ROUNDS  = (SESSION && SESSION.restRounds) ? SESSION.restRounds : 60;     // sec entre rounds
+
+// ─── STATE ───
+let steps = [];
+let currentStep = 0;
+let timeLeft = 0;
+let totalDuration = 0;
+let running = false;
+let timer = null;
+let soundOn = true;
+let startTime = null;
+let audioCtx = null;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function beep(freq, dur, vol=0.3, type='sine', delay=0) {
+  if (!soundOn) return;
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+    gain.gain.setValueAtTime(0, ctx.currentTime + delay);
+    gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + delay + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + dur);
+    osc.start(ctx.currentTime + delay);
+    osc.stop(ctx.currentTime + delay + dur + 0.05);
+  } catch(e) {}
+}
+
+function playGo() { beep(880,0.12,0.4,'square'); beep(1100,0.18,0.4,'square',0.15); }
+function playRest() { beep(440,0.2,0.3,'sine'); beep(330,0.3,0.25,'sine',0.22); }
+function playTick() { beep(660,0.08,0.2,'sine'); }
+function playFinish() {
+  [0, 0.15, 0.3, 0.5, 0.7].forEach((d,i) => beep(440+i*110, 0.18, 0.3, 'sine', d));
+}
+
+// ─── BUILD STEPS ───
+function buildSteps() {
+  steps = [];
+  // Warmup
+  WARMUP.forEach(e => steps.push({ ...e, isRest: false, round: 0 }));
+
+  for (let r = 1; r <= TOTAL_ROUNDS; r++) {
+    CIRCUIT_EXERCISES.forEach((ex, i) => {
+      steps.push({ ...ex, isRest: false, round: r, phase: `ROUND ${r} / ${TOTAL_ROUNDS}` });
+      if (i < CIRCUIT_EXERCISES.length - 1) {
+        steps.push({ name: 'Repos', emoji: '⏸️', detail: `Prochain : ${CIRCUIT_EXERCISES[i+1].name}`,
+          duration: REST_BETWEEN, isRest: true, phase: 'REPOS', round: r });
+      }
+    });
+    if (r < TOTAL_ROUNDS) {
+      steps.push({ name: 'Repos entre rounds', emoji: '🧘', detail: `Round ${r+1} / ${TOTAL_ROUNDS} dans 60s`,
+        duration: REST_ROUNDS, isRest: true, phase: 'REPOS ROUND', round: r });
+    }
+  }
+}
+
+// ─── QUEUE (only non-rest visible exercises) ───
+function buildQueue() {
+  const list = document.getElementById('queueList');
+  list.innerHTML = '';
+  const visible = steps.filter(s => !s.isRest);
+  visible.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'queue-item';
+    div.id = `qi-${i}`;
+    div.innerHTML = `
+      <div class="queue-emoji">${s.emoji}</div>
+      <div class="queue-info">
+        <div class="queue-name">${s.name}</div>
+        <div class="queue-sub">${s.detail}</div>
+      </div>
+      <div class="queue-check">✓</div>`;
+    list.appendChild(div);
+  });
+}
+
+function updateQueue() {
+  const visible = steps.filter(s => !s.isRest);
+  const currentVisible = steps.slice(0, currentStep+1).filter(s => !s.isRest).length - 1;
+  visible.forEach((s, i) => {
+    const el = document.getElementById(`qi-${i}`);
+    if (!el) return;
+    el.className = 'queue-item';
+    if (i < currentVisible) el.classList.add('done-item');
+    else if (i === currentVisible && !steps[currentStep]?.isRest) el.classList.add('active-item');
+  });
+}
+
+// ─── RENDER STEP ───
+const CIRC = 2 * Math.PI * 68; // 427.256
+
+function renderStep(animate = false) {
+  const s = steps[currentStep];
+  if (!s) { finish(); return; }
+
+  const phaseEl = document.getElementById('phaseLabel');
+  const emojiEl = document.getElementById('exerciseEmoji');
+  const nameEl  = document.getElementById('exerciseName');
+  const detailEl = document.getElementById('exerciseDetail');
+  const numEl   = document.getElementById('timerNum');
+  const progEl  = document.getElementById('timerProgress');
+
+  phaseEl.textContent = s.phase || '';
+  phaseEl.className = 'phase-label ' + (s.isRest ? 'rest' : 'work');
+
+  if (animate) {
+    emojiEl.classList.remove('pulse');
+    void emojiEl.offsetWidth;
+    emojiEl.classList.add('pulse');
+  }
+  emojiEl.textContent = s.emoji;
+  nameEl.textContent  = s.name;
+  detailEl.textContent = s.detail;
+
+  timeLeft = s.duration || 0;
+  totalDuration = timeLeft;
+
+  numEl.textContent = timeLeft || '•';
+  numEl.className   = 'timer-num';
+
+  // Ring
+  progEl.className = 'timer-progress' + (s.isRest ? ' rest-mode' : '');
+  progEl.style.strokeDashoffset = 0;
+
+  // Rounds
+  const roundDots = document.getElementById('roundDots');
+  roundDots.innerHTML = '';
+  for (let i = 1; i <= TOTAL_ROUNDS; i++) {
+    const d = document.createElement('div');
+    d.className = 'round-dot';
+    const r = s.round;
+    if (i < r) d.classList.add('done');
+    else if (i === r) d.classList.add('active');
+    roundDots.appendChild(d);
+  }
+
+  // Progress overall
+  const pct = Math.round((currentStep / steps.length) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+
+  updateQueue();
+}
+
+// ─── TICK ───
+function tick() {
+  const s = steps[currentStep];
+  if (!s) { finish(); return; }
+
+  if (s.duration) {
+    // Timed exercise
+    if (timeLeft <= 0) {
+      advance(); return;
+    }
+    if (timeLeft <= 3) playTick();
+    const numEl = document.getElementById('timerNum');
+    numEl.textContent = timeLeft;
+    numEl.className = 'timer-num' + (timeLeft <= 3 ? ' danger' : '');
+
+    const offset = CIRC * (1 - timeLeft / totalDuration);
+    document.getElementById('timerProgress').style.strokeDashoffset = offset;
+    timeLeft--;
+  }
+  // Rep-based: timer just shows dot, user clicks skip
+}
+
+function advance() {
+  clearInterval(timer);
+  currentStep++;
+  if (currentStep >= steps.length) { finish(); return; }
+  const s = steps[currentStep];
+  if (s.isRest) playRest(); else playGo();
+  renderStep(true);
+  if (running) {
+    if (s.duration) {
+      timer = setInterval(tick, 1000);
+    }
+    // Rep-based: wait for skip
+  }
+}
+
+// ─── CONTROLS ───
+document.getElementById('mainBtn').addEventListener('click', () => {
+  if (!running) {
+    running = true;
+    if (!startTime) startTime = Date.now();
+    document.getElementById('mainBtn').textContent = 'PAUSE';
+    const s = steps[currentStep];
+    if (s && s.isRest) playRest(); else playGo();
+    if (s && s.duration) {
+      timer = setInterval(tick, 1000);
+    }
+  } else {
+    running = false;
+    clearInterval(timer);
+    document.getElementById('mainBtn').textContent = 'REPRENDRE';
+  }
+});
+
+document.getElementById('skipBtn').addEventListener('click', () => {
+  if (!running) return;
+  advance();
+});
+
+document.getElementById('resetBtn').addEventListener('click', restartAll);
+
+document.getElementById('soundToggle').addEventListener('click', () => {
+  soundOn = !soundOn;
+  document.getElementById('soundToggle').textContent = soundOn ? '🔊' : '🔇';
+});
+
+function finish() {
+  clearInterval(timer);
+  running = false;
+  playFinish();
+  document.getElementById('mainArea').style.display = 'none';
+  const fin = document.getElementById('finishScreen');
+  fin.classList.add('show');
+
+  // Stats
+  const elapsed = startTime ? Math.round((Date.now() - startTime) / 1000) : 0;
+  const min = Math.floor(elapsed / 60);
+  const sec = elapsed % 60;
+  document.getElementById('statTime').textContent = `${min}:${sec.toString().padStart(2,'0')}`;
+  document.getElementById('statRounds').textContent = TOTAL_ROUNDS;
+  document.getElementById('statExercises').textContent = CIRCUIT_EXERCISES.length;
+}
+
+function restartAll() {
+  clearInterval(timer);
+  currentStep = 0;
+  running = false;
+  startTime = null;
+  timeLeft = 0;
+  totalDuration = 0;
+  document.getElementById('finishScreen').classList.remove('show');
+  document.getElementById('mainArea').style.display = 'block';
+  document.getElementById('mainBtn').textContent = 'START';
+  buildQueue();
+  renderStep(false);
+}
+
+// ─── INIT ───
+if (!HAS_WARMUP) {
+  document.getElementById('mainArea').style.display = 'none';
+  document.getElementById('warmupError').style.display = 'block';
+} else {
+  buildSteps();
+  buildQueue();
+  renderStep(false);
+}
+</script>
+</body>
+</html>
