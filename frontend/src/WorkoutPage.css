@@ -5,11 +5,25 @@
   background: #0a0a0f;
 }
 
-.workout-back-btn {
+.workout-top {
   position: absolute;
   top: 16px;
   left: 16px;
+  right: 16px;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.workout-top > * {
+  pointer-events: auto;
+}
+
+.workout-back-btn {
+  position: static;
   font: inherit;
   font-size: 0.9rem;
   padding: 0.5rem 1rem;

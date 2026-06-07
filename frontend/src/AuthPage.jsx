@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./AuthPage.css";
+import Logo from "./Logo";
 
 function AuthPage({ onAuthSuccess }) {
   const [mode, setMode] = useState("login");
@@ -36,6 +37,7 @@ function AuthPage({ onAuthSuccess }) {
 
   return (
     <main className="auth-page">
+      <Logo size="xl" className="logo--auth" />
       <h1>{mode === "login" ? "Connexion" : "Inscription"}</h1>
       <form className="auth-form" onSubmit={handleSubmit}>
         <input

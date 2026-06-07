@@ -12,5 +12,6 @@ docker compose -f docker-compose.prod.yml pull db 2>/dev/null || true
 docker compose -f docker-compose.prod.yml up -d --build
 
 echo ""
-echo "Déploiement terminé. L'app est accessible sur le port 80."
+APP_PORT="${APP_PORT:-82}"
+echo "Déploiement terminé. L'app est accessible sur le port ${APP_PORT}."
 docker compose -f docker-compose.prod.yml ps

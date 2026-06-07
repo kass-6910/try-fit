@@ -16,9 +16,9 @@
   flex-wrap: wrap;
 }
 
-.home-header h1 {
-  margin: 0;
-  font-size: clamp(1.5rem, 6vw, 2rem);
+.home-brand {
+  display: flex;
+  align-items: center;
 }
 
 .logout-btn {
@@ -48,7 +48,7 @@
   border: none;
   border-radius: 14px;
   background: var(--accent);
-  color: #fff;
+  color: #000;
   cursor: pointer;
 }
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./WorkoutBuilder.css";
+import Logo from "./Logo";
 import { CATEGORIES, WARMUPS, EXERCISES, MIN_WARMUPS, hasRequiredWarmups } from "./data/workouts";
 import { apiFetch } from "./api";
 
@@ -25,6 +26,8 @@ function WorkoutBuilder({ onBack, onCreate }) {
   const [warmups, setWarmups] = useState([]);
   const [exercises, setExercises] = useState([]);
   const [rounds, setRounds] = useState(4);
+  const [restBetween, setRestBetween] = useState(15);
+  const [restRounds, setRestRounds] = useState(60);
   const [name, setName] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState("");
@@ -47,8 +50,8 @@ function WorkoutBuilder({ onBack, onCreate }) {
       warmups: WARMUPS.filter((w) => warmups.includes(w.id)),
       exercises: exerciseList.filter((e) => exercises.includes(e.id)),
       rounds,
-      restBetween: 15,
-      restRounds: 60,
+      restBetween,
+      restRounds,
     };
   };
 
@@ -89,12 +92,16 @@ function WorkoutBuilder({ onBack, onCreate }) {
   const canStart = hasExercises && hasWarmups;
   const canSave = canStart && name.trim().length > 0;
 
+  const formatRest = (s) =>
+    s >= 60 ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}` : `${s}s`;
+
   return (
     <div className="wb">
       <header className="wb-header">
         <button type="button" className="wb-back" onClick={onBack}>
           ←
         </button>
+        <Logo size="sm" className="logo--wb" />
         <h1>Crée ta séance</h1>
       </header>
 
@@ -184,6 +191,50 @@ function WorkoutBuilder({ onBack, onCreate }) {
             >
               +
             </button>
+          </div>
+        </section>
+
+        <section className="wb-section">
+          <p className="wb-section-title">Temps de repos</p>
+          <div className="wb-rest-row">
+            <span className="wb-rest-label">Entre exercices</span>
+            <div className="wb-stepper wb-stepper-sm">
+              <button
+                type="button"
+                className="wb-step-btn"
+                onClick={() => setRestBetween((s) => Math.max(0, s - 5))}
+              >
+                –
+              </button>
+              <span className="wb-step-val">{formatRest(restBetween)}</span>
+              <button
+                type="button"
+                className="wb-step-btn"
+                onClick={() => setRestBetween((s) => Math.min(120, s + 5))}
+              >
+                +
+              </button>
+            </div>
+          </div>
+          <div className="wb-rest-row">
+            <span className="wb-rest-label">Entre rounds</span>
+            <div className="wb-stepper wb-stepper-sm">
+              <button
+                type="button"
+                className="wb-step-btn"
+                onClick={() => setRestRounds((s) => Math.max(0, s - 15))}
+              >
+                –
+              </button>
+              <span className="wb-step-val">{formatRest(restRounds)}</span>
+              <button
+                type="button"
+                className="wb-step-btn"
+                onClick={() => setRestRounds((s) => Math.min(300, s + 15))}
+              >
+                +
+              </button>
+            </div>
           </div>
         </section>
       </div>

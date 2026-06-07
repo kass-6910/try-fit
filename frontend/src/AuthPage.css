@@ -1,3 +1,7 @@
+.auth-page .logo--auth {
+  margin-bottom: 0.25rem;
+}
+
 .auth-page {
   flex: 1;
   width: 100%;

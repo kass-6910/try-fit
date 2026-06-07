@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./HomePage.css";
+import Logo from "./Logo";
 import { apiFetch } from "./api";
 import { hasRequiredWarmups } from "./data/workouts";
 
@@ -50,7 +51,9 @@ function HomePage({ onLogout, onOpenWorkout, onRun }) {
   return (
     <main className="home-page">
       <header className="home-header">
-        <h1>Try Fit</h1>
+        <div className="home-brand">
+          <Logo size="md" className="logo--header" />
+        </div>
         <button type="button" className="logout-btn" onClick={onLogout}>
           Déconnexion
         </button>

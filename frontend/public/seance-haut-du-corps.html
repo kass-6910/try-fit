@@ -472,8 +472,8 @@ const CIRCUIT_EXERCISES = (SESSION && SESSION.exercises && SESSION.exercises.len
 ];
 
 const TOTAL_ROUNDS = (SESSION && SESSION.rounds) ? SESSION.rounds : 4;
-const REST_BETWEEN = (SESSION && SESSION.restBetween) ? SESSION.restBetween : 15;   // sec entre exos
-const REST_ROUNDS  = (SESSION && SESSION.restRounds) ? SESSION.restRounds : 60;     // sec entre rounds
+const REST_BETWEEN = (SESSION && SESSION.restBetween != null) ? SESSION.restBetween : 15;   // sec entre exos
+const REST_ROUNDS  = (SESSION && SESSION.restRounds != null) ? SESSION.restRounds : 60;     // sec entre rounds
 
 // ─── STATE ───
 let steps = [];
@@ -524,13 +524,13 @@ function buildSteps() {
   for (let r = 1; r <= TOTAL_ROUNDS; r++) {
     CIRCUIT_EXERCISES.forEach((ex, i) => {
       steps.push({ ...ex, isRest: false, round: r, phase: `ROUND ${r} / ${TOTAL_ROUNDS}` });
-      if (i < CIRCUIT_EXERCISES.length - 1) {
+      if (i < CIRCUIT_EXERCISES.length - 1 && REST_BETWEEN > 0) {
         steps.push({ name: 'Repos', emoji: '⏸️', detail: `Prochain : ${CIRCUIT_EXERCISES[i+1].name}`,
           duration: REST_BETWEEN, isRest: true, phase: 'REPOS', round: r });
       }
     });
-    if (r < TOTAL_ROUNDS) {
-      steps.push({ name: 'Repos entre rounds', emoji: '🧘', detail: `Round ${r+1} / ${TOTAL_ROUNDS} dans 60s`,
+    if (r < TOTAL_ROUNDS && REST_ROUNDS > 0) {
+      steps.push({ name: 'Repos entre rounds', emoji: '🧘', detail: `Round ${r+1} / ${TOTAL_ROUNDS} dans ${REST_ROUNDS}s`,
         duration: REST_ROUNDS, isRest: true, phase: 'REPOS ROUND', round: r });
     }
   }

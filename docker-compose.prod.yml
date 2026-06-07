@@ -33,7 +33,7 @@ services:
       dockerfile: Dockerfile.prod
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "${APP_PORT:-82}:80"
     depends_on:
       - backend
 

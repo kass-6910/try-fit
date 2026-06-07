@@ -1,0 +1,21 @@
+.logo {
+  width: var(--logo-size, 48px);
+  height: var(--logo-size, 48px);
+  object-fit: contain;
+  flex-shrink: 0;
+  display: block;
+}
+
+.logo--header {
+  --logo-size: 44px;
+}
+
+.logo--auth {
+  --logo-size: clamp(100px, 28vw, 160px);
+  width: clamp(100px, 28vw, 160px);
+  height: clamp(100px, 28vw, 160px);
+}
+
+.logo--wb {
+  --logo-size: 36px;
+}
